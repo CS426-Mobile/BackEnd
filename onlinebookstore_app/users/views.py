@@ -12,8 +12,8 @@ def register(request):
     if request.method == "POST":
         data = json.loads(request.body)
         user_email = data.get("user_email")
-        password = data.get("user_password")
-        password2 = data.get("user_password2")
+        password = data.get("password")
+        password2 = data.get("password2")
 
         if password != password2:
             return JsonResponse({"message": "Passwords do not match"}, status=400)
@@ -32,7 +32,7 @@ def login(request):
     if request.method == "POST":
         data = json.loads(request.body)
         user_email = data.get("user_email")
-        password = data.get("user_password")
+        password = data.get("password")
 
         # Kiểm tra xem email có tồn tại không
         if not User.objects.filter(user_email=user_email).exists():
@@ -41,7 +41,7 @@ def login(request):
         # Xác thực người dùng
         user = authenticate(request, user_email=user_email, password=password)
         if user is None:
-            return JsonResponse({"message": "Incorrect email or password"}, status=400)
+            return JsonResponse({"message": "Incorrect password"}, status=400)
         
         auth_login(request, user)
         return JsonResponse({"message": "Login successful"}, status=200)
