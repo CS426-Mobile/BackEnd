@@ -21,7 +21,7 @@ def author(request):
             "about": author.about,
             "author_image": author.author_image
         }
-        return JsonResponse(author_json, status=200)
+        return JsonResponse(author_json, safe=False, status=200)
 
     if request.method == "PUT":
         data = json.loads(request.body)
@@ -74,6 +74,7 @@ def request_images(request, author_name):
 def get_5_popular_authors(request):
     if request.method == "GET":
         authors = Author.objects.order_by('-num_follower')[:5]
+
         authors_json = [
             {
                 "author_name": author.author_name,
@@ -83,7 +84,7 @@ def get_5_popular_authors(request):
             }
             for author in authors
         ]
-        return JsonResponse(authors_json, status=200)
+        return JsonResponse(authors_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
@@ -100,7 +101,7 @@ def get_simple_authors(request):
             }
             for author in authors
         ]
-        return JsonResponse(authors_json, status=200)
+        return JsonResponse(authors_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
@@ -117,7 +118,7 @@ def get_match_string_authors(request):
             }
             for author in authors
         ]
-        return JsonResponse(authors_json, status=200)
+        return JsonResponse(authors_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
@@ -136,6 +137,6 @@ def get_author_info(request):
             }
             for author in authors
         ]
-        return JsonResponse(authors_json, status=200)
+        return JsonResponse(authors_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)

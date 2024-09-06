@@ -91,11 +91,46 @@ def test_change_password(cookies):
     else:
         print('Failed to change password')
 
+def test_get_5_author():
+    # path("author/popular_5/", views.get_5_popular_authors, name='get_5_popular_authors'),
+    # def get_5_popular_authors(request):
+    # if request.method == "GET":
+    #     authors = Author.objects.order_by('-num_follower')[:5]
+
+    #     authors_json = [
+    #         {
+    #             "author_name": author.author_name,
+    #             "num_follower": author.num_follower,
+    #             "about": author.about,
+    #             "author_image": author.author_image
+    #         }
+    #         for author in authors
+    #     ]
+    #     return JsonResponse(authors_json, status=200)
+    
+    # return JsonResponse({"message": "Invalid request method"}, status=405)
+    url = URL + '/author/popular_5/'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+    if response.status_code == 200:
+        authors = response.json()
+        for author in authors:
+            print(f'Author Name: {author.get("author_name", "No name")}')
+            print(f'Number of Followers: {author.get("num_follower", "No followers")}')
+            print(f'About: {author.get("about", "No about")}')
+            print(f'Author Image: {author.get("author_image", "No image")}')
+            print()
+    else:
+        print('Failed to get 5 authors')
+
 if __name__ == "__main__":
-    test_register()
-    cookies = test_login()
-    # test_getuserinfo(cookies)
-    # test_change_password(cookies)
-    test_logout(cookies)
-    # test_getuserinfo(cookies)
-    test_logout(cookies)
+    # test_register()
+    # cookies = test_login()
+    # # test_getuserinfo(cookies)
+    # # test_change_password(cookies)
+    # test_logout(cookies)
+    # # test_getuserinfo(cookies)
+    # test_logout(cookies)
+    test_get_5_author()

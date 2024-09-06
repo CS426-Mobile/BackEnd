@@ -12,6 +12,6 @@ def all_categories(request):
                 "category_name": category.category_name
             } for category in categories
         ]
-        return JsonResponse(response, safe=False)
+        return JsonResponse(response, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)

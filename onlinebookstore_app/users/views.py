@@ -66,15 +66,17 @@ def logout(request):
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-@csrf_exempt
 @login_required
 def get_user_info_from_cookies(request):
-    user = request.user
-    user_info = {
-        "user_email": user.user_email,
-        "address": user.user_address,
-    }
-    return JsonResponse({"user": user_info}, status=200)
+    if request.method == "GET":
+        user = request.user
+        user_info = {
+            "user_email": user.user_email,
+            "address": user.user_address,
+        }
+        return JsonResponse({"user": user_info}, status=200)
+    
+    return JsonResponse({"message": "Invalid request method"}, status=405)
     
 @csrf_exempt
 @login_required
@@ -128,7 +130,6 @@ def update_address_with_email(request):
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
 # get address of user_email
-@csrf_exempt
 def get_address(request, user_email):
     if request.method == "GET":
         user = User.objects.get(user_email=user_email)

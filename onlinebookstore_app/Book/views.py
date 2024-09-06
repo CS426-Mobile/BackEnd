@@ -196,7 +196,7 @@ def get_book_info(request, book_name):
             "book_page": book.book_page,
             "average_rating": book.average_rating(),
         }
-        return JsonResponse(response, status=200)
+        return JsonResponse(response, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
