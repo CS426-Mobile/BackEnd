@@ -12,8 +12,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-URL = 'http://127.0.0.1:8000'
-# URL = 'http://192.168.1.14:8000'
+# URL = 'http://127.0.0.1:8000'
+URL = 'http://192.168.72.150:8000'
 
 def test_register():
     url = URL + '/register/'

@@ -56,7 +56,7 @@ def all_authors(request):
             }
             for author in authors
         ]
-        return JsonResponse(authors_json, status=200)
+        return JsonResponse(authors_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 

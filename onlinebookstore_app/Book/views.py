@@ -17,7 +17,7 @@ def get_10_books(request):
                 "book_image": book.book_image
             } for book in books
         ]
-        return JsonResponse(response, safe=False)
+        return JsonResponse(response, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
@@ -33,7 +33,7 @@ def get_20_books(request):
                 "book_image": book.book_image
             } for book in books
         ]
-        return JsonResponse(response, safe=False)
+        return JsonResponse(response, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
