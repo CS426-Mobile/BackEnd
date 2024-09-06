@@ -1,13 +1,24 @@
 import requests
 import json
 
+# get all User from the database db.sqlite3
+import os
+import django
+# Set up Django environment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'onlinebookstore_app.settings')
+django.setup()
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 URL = 'http://127.0.0.1:8000'
 # URL = 'http://192.168.1.14:8000'
 
 def test_register():
     url = URL + '/register/'
     data = {
-        "email": "test@example.com",
+        "user_email": "test1@example.com",
         "password": "password123",
         "password2": "password123"
     }
@@ -22,7 +33,7 @@ def test_register():
 def test_login():
     url = URL + '/login/'
     data = {
-        "email": "test@example.com",
+        "user_email": "test1@example.com",
         "password": "password123"
     }
     headers = {'Content-Type': 'application/json'}
@@ -58,22 +69,11 @@ def test_getuserinfo(cookies):
     else:
         print('Failed to retrieve user information')
 
-# get all User from the database db.sqlite3
-import os
-import django
-
-# Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'onlinebookstore_app.settings')
-django.setup()
-
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 def get_all_users():
     users = User.objects.all()
     for user in users:
-        print(f'ID: {user.id}, Email: {user.UserEmail}, password: {user.password}')
+        print(f'ID: {user.id}, Email: {user.user_email}, password: {user.password}')
 
 def test_change_password(cookies):
     url = URL + '/user/change_password/'
@@ -91,12 +91,11 @@ def test_change_password(cookies):
     else:
         print('Failed to change password')
 
-# if __name__ == "__main__":
-#     test_register()
-#     cookies = test_login()
-#     # test_getuserinfo(cookies)
-#     test_change_password(cookies)
-#     test_logout(cookies)
-#     # test_getuserinfo(cookies)
-#     test_logout(cookies)
-#     get_all_users()
+if __name__ == "__main__":
+    test_register()
+    cookies = test_login()
+    # test_getuserinfo(cookies)
+    # test_change_password(cookies)
+    test_logout(cookies)
+    # test_getuserinfo(cookies)
+    test_logout(cookies)
