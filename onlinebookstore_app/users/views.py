@@ -4,7 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.sessions.models import Session
+from django.utils import timezone
 User = get_user_model()
 
 @csrf_exempt
@@ -34,18 +35,26 @@ def login(request):
         user_email = data.get("user_email")
         password = data.get("password")
 
-        # Kiểm tra xem email có tồn tại không
+        # Check if the email exists
         if not User.objects.filter(user_email=user_email).exists():
             return JsonResponse({"message": "User does not exist"}, status=400)
 
-        # Xác thực người dùng
+        # Authenticate the user
         user = authenticate(request, user_email=user_email, password=password)
         if user is None:
             return JsonResponse({"message": "Incorrect password"}, status=400)
-        
+
+        # Invalidate other sessions for this user before logging in
+        user_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+        for session in user_sessions:
+            session_data = session.get_decoded()
+            if session_data.get('_auth_user_id') == str(user.id):
+                session.delete()
+
+        # Log in the user and create a new session
         auth_login(request, user)
         return JsonResponse({"message": "Login successful"}, status=200)
-    
+
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
 @csrf_exempt
