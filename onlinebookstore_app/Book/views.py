@@ -13,7 +13,7 @@ def get_10_books(request):
         response = [
             {
                 "book_name": book.book_name,
-                "author_name": book.author_name,
+                "author_name": book.author_name.author_name,
                 "book_image": book.book_image
             } for book in books
         ]
@@ -29,7 +29,7 @@ def get_20_books(request):
         response = [
             {
                 "book_name": book.book_name,
-                "author_name": book.author_name,
+                "author_name": book.author_name.author_name,
                 "book_image": book.book_image
             } for book in books
         ]
@@ -58,11 +58,12 @@ def get_books_by_category(request):
         rating_sort = data.get('rating_sort', 'none')
         price_sort = data.get('price_sort', 'none')
 
+
         # Filter by category
         if category_name == '':
             books = Book.objects.all()
         else:
-            books = Book.objects.filter(category__name=category_name)
+            books = Book.objects.filter(category__category_name=category_name)
 
         # Filter by rating
         rating_ranges = {
@@ -100,8 +101,6 @@ def get_books_by_category(request):
                 'book_name': book['book_name'],
                 'author_name': book['author_name'],
                 'book_image': book['book_image'],
-                # 'average_rating': book['average_rating'],
-                # 'price': book['price'],
             } for book in filtered_books
         ]
         
@@ -109,12 +108,13 @@ def get_books_by_category(request):
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-# Query Book(BookName, AuthorName, BookImage) có CategoryInput là substring của CategoryName và kết hợp tương tự bên trên
+# Query Book(BookName, AuthorName, BookImage) có book_input matching môt phần với book_name và kết hợp tương tự bên trên
 @csrf_exempt
-def get_books_by_matching_string_category(request):
+def get_books_by_matching_string(request):
     if request.method == "GET":
         data = request.GET
-        category_input = data.get('category_input', '')
+        category_name = data.get('category_name', '')
+        book_input = data.get('book_input', '')
         rating = data.get('rating_optional', 'all')
         price_optional = data.get('price_optional', 'no')
         price_min = data.get('price_min', 0)
@@ -123,7 +123,13 @@ def get_books_by_matching_string_category(request):
         price_sort = data.get('price_sort', 'none')
 
         # Filter by category
-        books = Book.objects.filter(category__name__contains=category_input)
+        if category_name == '':
+            books = Book.objects.all()
+        else:
+            books = Book.objects.filter(category__category_name=category_name)
+
+        # Filter by matching string
+        books = books.filter(book_name__contains=book_input)
 
         # Filter by rating
         rating_ranges = {
@@ -161,8 +167,6 @@ def get_books_by_matching_string_category(request):
                 'book_name': book['book_name'],
                 'author_name': book['author_name'],
                 'book_image': book['book_image'],
-                # 'average_rating': book['average_rating'],
-                # 'price': book['price'],
             } for book in filtered_books
         ]
         

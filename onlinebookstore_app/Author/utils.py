@@ -2,7 +2,8 @@ import os
 import requests
 from django.conf import settings
 
-default_image_url = "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
+default_image_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+# default_image_url = "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
 
 def load_image(image_url, author_name):
     local_filename = f"{author_name}_avatar.jpg"

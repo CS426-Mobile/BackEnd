@@ -12,8 +12,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# URL = 'http://127.0.0.1:8000'
-URL = 'http://192.168.72.150:8000'
+URL = 'http://127.0.0.1:8000'
+# URL = 'http://192.168.72.150:8000'
 
 def test_register():
     url = URL + '/register/'
@@ -125,6 +125,88 @@ def test_get_5_author():
     else:
         print('Failed to get 5 authors')
 
+def test_10_books():
+    url = URL + '/books/20/'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+    if response.status_code == 200:
+        # books = response.json()
+        # for book in books:
+        #     print(f'Book Name: {book.get("book_name", "No name")}')
+        #     print(f'Author Name: {book.get("author_name", "No author")}')
+        #     print(f'Book Image: {book.get("book_image", "No image")}')
+        #     print()
+        print(response.json())
+    else:
+        print('Failed to get 10 books')
+
+def test_get_author():
+    url = URL + '/author/'
+    data = {
+        "author_name": "Hoang Tran"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+    if response.status_code == 200:
+        authors = response.json()
+        print(authors)
+    else:
+        print('Failed to get authors')
+
+def test_match_string_author():
+    url = URL + '/author/match_string/'
+    data = {
+        "author_name": "Hoang"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+    if response.status_code == 200:
+        authors = response.json()
+        for author in authors:
+            print(f'Author Name: {author.get("author_name", "No name")}')
+            print(f'Author Image: {author.get("author_image", "No image")}')
+            print()
+    else:
+        print('Failed to get authors')
+
+def test_get_books_by_matching_string():
+    url = URL + '/books/matching_string/'
+    data = {
+        "book_input": "plica"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+    if response.status_code == 200:
+        books = response.json()
+        for book in books:
+            print(f'Book Name: {book.get("book_name", "No name")}')
+            print(f'Author Name: {book.get("author_name", "No author")}')
+            print(f'Book Image: {book.get("book_image", "No image")}')
+            print()
+    else:
+        print('Failed to get books')
+        
+def test_get_author_categories():
+    url = URL + '/author/Hoang Tran/categories/'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+    if response.status_code == 200:
+        categories = response.json().get("categories", [])
+        for category in categories:
+            print(category)
+    else:
+        print('Failed to get categories')
+
 if __name__ == "__main__":
     # test_register()
     # cookies = test_login()
@@ -133,4 +215,9 @@ if __name__ == "__main__":
     # test_logout(cookies)
     # # test_getuserinfo(cookies)
     # test_logout(cookies)
-    test_get_5_author()
+    # test_get_5_author()
+    # test_10_books()
+    # test_match_string_author()
+    # test_get_author()
+    # test_get_books_by_matching_string()
+    test_get_author_categories()

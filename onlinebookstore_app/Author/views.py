@@ -11,7 +11,7 @@ from .utils import ensure_image_exist
 def author(request):
     if request.method == "GET":
         author_name = request.GET.get('author_name')
-        author = Author.objects.get(author_name=author_name).first()
+        author = Author.objects.get(author_name=author_name)
         if author is None:
             return JsonResponse({"message": "Author not found"}, status=404)
 
@@ -23,7 +23,7 @@ def author(request):
         }
         return JsonResponse(author_json, safe=False, status=200)
 
-    if request.method == "PUT":
+    if request.method == "POST":
         data = json.loads(request.body)
         author_name = data.get("author_name")
 
@@ -34,12 +34,10 @@ def author(request):
         about = data.get("about")
         author_image = data.get("author_image")
         author_image = ensure_image_exist(author_image)
-        # image_url = data.get("author_image")
-        # author_image = load_image(image_url, author_name)
         
         author = Author(author_name=author_name, num_follower=num_follower, about=about, author_image=author_image)
         author.save()
-        return JsonResponse({"message": "Author was added successfully"}, status=201)
+        return JsonResponse({"message": "Author created successfully"}, status=201)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
     
@@ -62,7 +60,7 @@ def all_authors(request):
 
 @csrf_exempt
 def request_images(request, author_name):
-    author = Author.objects.get(author_name=author_name).first()
+    author = Author.objects.get(author_name=author_name)
     if author is None:
         return JsonResponse({"message": "Author not found"}, status=404)
 
@@ -90,18 +88,18 @@ def get_5_popular_authors(request):
 
 # Get author_name (author_name, author_image) from the database
 @csrf_exempt
-def get_simple_authors(request):
+def get_simple_author(request):
     if request.method == "GET":
         author_name = request.GET.get('author_name', '')
-        authors = Author.objects.filter(author_name=author_name)
-        authors_json = [
-            {
-                "author_name": author.author_name,
-                "author_image": author.author_image
-            }
-            for author in authors
-        ]
-        return JsonResponse(authors_json, safe=False, status=200)
+        authors = Author.objects.get(author_name=author_name)
+
+        if authors is None:
+            return JsonResponse({"message": "Author not found"}, status=404)
+        author_json = {
+            "author_name": authors.author_name,
+            "author_image": authors.author_image
+        }
+        return JsonResponse(author_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
@@ -126,17 +124,17 @@ def get_match_string_authors(request):
 @csrf_exempt
 def get_author_info(request):
     if request.method == "GET":
-        author_name = request.GET.get('author_name', '')
-        authors = Author.objects.filter(author_name=author_name)
-        authors_json = [
-            {
-                "author_name": author.author_name,
-                "num_follower": author.num_follower,
-                "about": author.about,
-                "author_image": author.author_image
-            }
-            for author in authors
-        ]
-        return JsonResponse(authors_json, safe=False, status=200)
+        author_name = request.GET.get('author_name')
+        author = Author.objects.get(author_name=author_name)
+        if author is None:
+            return JsonResponse({"message": "Author not found"}, status=404)
+
+        author_json = {
+            "author_name": author.author_name,
+            "num_follower": author.num_follower,
+            "about": author.about,
+            "author_image": author.author_image
+        }
+        return JsonResponse(author_json, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
