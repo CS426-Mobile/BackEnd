@@ -215,6 +215,23 @@ def get_num_books(request, author_name):
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
+# query all books that author_name has written
+@csrf_exempt
+def get_books_by_author(request, author_name):
+    if request.method == "GET":
+        books = Book.objects.filter(author_name=author_name)
+        response = [
+            {
+                "book_name": book.book_name,
+                "author_name": book.author_name.author_name,
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
+            } for book in books
+        ]
+        return JsonResponse(response, safe=False, status=200)
+    
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
 # query all category that author_name has written
 @csrf_exempt
 def get_author_categories(request, author_name):
