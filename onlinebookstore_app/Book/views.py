@@ -14,7 +14,8 @@ def get_10_books(request):
             {
                 "book_name": book.book_name,
                 "author_name": book.author_name.author_name,
-                "book_image": book.book_image
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
             } for book in books
         ]
         return JsonResponse(response, safe=False, status=200)
@@ -30,7 +31,8 @@ def get_20_books(request):
             {
                 "book_name": book.book_name,
                 "author_name": book.author_name.author_name,
-                "book_image": book.book_image
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
             } for book in books
         ]
         return JsonResponse(response, safe=False, status=200)

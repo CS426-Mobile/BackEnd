@@ -23,4 +23,5 @@ class Book(models.Model):
         return self.book_name
     
     def average_rating(self):
-        return (self.num_1_star + self.num_2_star * 2 + self.num_3_star * 3 + self.num_4_star * 4 + self.num_5_star * 5) / (self.num_1_star + self.num_2_star + self.num_3_star + self.num_4_star + self.num_5_star)
+        average = (self.num_1_star + self.num_2_star * 2 + self.num_3_star * 3 + self.num_4_star * 4 + self.num_5_star * 5) / (self.num_1_star + self.num_2_star + self.num_3_star + self.num_4_star + self.num_5_star)
+        return round(average, 2)
