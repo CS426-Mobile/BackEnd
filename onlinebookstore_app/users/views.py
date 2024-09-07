@@ -22,7 +22,7 @@ def register(request):
         if User.objects.filter(user_email=user_email).exists():
             return JsonResponse({"message": "Email is already taken"}, status=400)
         
-        # Sử dụng phương thức create_user từ CustomerManager
+        # Using the create_user method from CustomerManager
         user = User.objects.create_user(user_email=user_email, password=password)
         return JsonResponse({"message": "Account was created successfully"}, status=201)
     
@@ -122,7 +122,9 @@ def update_address_with_email(request):
         user_email = data.get("user_email")
         user_address = data.get("address")
 
-        user = User.objects.get(user_email=user_email)
+        user = User.objects.filter(user_email=user_email).first()
+        if user is None:
+            return JsonResponse({"message": "User does not exist"}, status=400)
         user.user_address = user_address
         user.save()
         return JsonResponse({"message": "Address updated successfully"}, status=200)
@@ -132,7 +134,9 @@ def update_address_with_email(request):
 # get address of user_email
 def get_address(request, user_email):
     if request.method == "GET":
-        user = User.objects.get(user_email=user_email)
+        user = User.objects.filter(user_email=user_email).first()
+        if user is None:
+            return JsonResponse({"message": "User does not exist"}, status=400)
         return JsonResponse({"address": user.user_address}, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)

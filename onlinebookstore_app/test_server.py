@@ -18,7 +18,7 @@ URL = 'http://127.0.0.1:8000'
 def test_register():
     url = URL + '/register/'
     data = {
-        "user_email": "test1@example.com",
+        "user_email": "test5@example.com",
         "password": "password123",
         "password2": "password123"
     }
@@ -132,12 +132,6 @@ def test_10_books():
 
     print(f'Status Code: {response.status_code}')
     if response.status_code == 200:
-        # books = response.json()
-        # for book in books:
-        #     print(f'Book Name: {book.get("book_name", "No name")}')
-        #     print(f'Author Name: {book.get("author_name", "No author")}')
-        #     print(f'Book Image: {book.get("book_image", "No image")}')
-        #     print()
         print(response.json())
     else:
         print('Failed to get 10 books')
@@ -194,18 +188,189 @@ def test_get_books_by_matching_string():
     else:
         print('Failed to get books')
         
-def test_get_author_categories():
-    url = URL + '/author/Hoang Tran/categories/'
+def test_get_related_books():
+    book_name = "Developing Modern Database Applications with PostgreSQL"
+    url = URL + f'/books/related/{book_name}/'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
 
     print(f'Status Code: {response.status_code}')
     if response.status_code == 200:
-        categories = response.json().get("categories", [])
-        for category in categories:
-            print(category)
+        books = response.json()
+        for book in books:
+            print(f'Book Name: {book.get("book_name", "No name")}')
+            print(f'Author Name: {book.get("author_name", "No author")}')
+            print(f'Book Image: {book.get("book_image", "No image")}')
+            print()
     else:
-        print('Failed to get categories')
+        print(response.json())
+
+def test_insert_customer_cart_book():
+    # URL pattern for inserting a new customer_cart_book record
+    # path('cart/insert/', views.insert_customer_cart_book, name='insert_customer_cart_book'),
+    url = URL + '/cart/insert/'
+    data = {
+        "user_email": "user2@example.com",
+        "book_name": "Developing Modern Database Applications with PostgreSQL"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+    
+    data2 = {
+        "user_email": "user2@example.com",
+        "book_name": "Programming in Python 3"
+    }
+    response2 = requests.post(url, data=json.dumps(data2), headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+
+    if response.status_code == 201:
+        print(f'Response JSON: {response.json()}')
+    else:
+        print('Failed to insert the record')
+
+def test_calculate_total_price():
+    # URL pattern for calculating the total price of the books in the cart for a user
+    # path('cart/total_price/', views.calculate_total_price, name='calculate_total_price'),
+    url = URL + '/cart/total_price/'
+    data = {
+        "user_email": "user2@example.com"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+
+    if response.status_code == 200:
+        total_price = response.json().get("total_price", "No total price")
+        print(f'Total Price: {total_price}')
+
+    else:
+        print('Failed to calculate the total price')
+
+def test_insert_customer_favorite():
+    # URL pattern for inserting a new customer_favorite record
+    # path('favorite/insert/', views.insert_customer_favorite, name='insert_customer_favorite'),
+    url = URL + '/favorite/insert/'
+    data = {
+        "user_email": "user2@example.com",
+        "book_name": "Developing Modern Database Applications with PostgreSQL"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+
+    if response.status_code == 201:
+        print(f'Response JSON: {response.json()}')
+    else:
+        print('Failed to insert the record')
+
+def test_delete_customer_favorite():
+    # URL pattern for deleting a customer_favorite record
+    # path('favorite/delete/', views.delete_customer_favorite, name='delete_customer_favorite'),
+    url = URL + '/favorite/delete/'
+    data = {
+        "user_email": "user2@example.com",
+        "book_name": "Developing Modern Database Applications with PostgreSQL"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.delete(url, data=json.dumps(data), headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+
+    if response.status_code == 200:
+        print(f'Response JSON: {response.json()}')
+    else:
+        print('Failed to delete the record')
+
+def test_query_customer_favorite():
+    # URL pattern for querying all customer_favorite records for a user
+    # path('favorite/query/', views.query_customer_favorite, name='query_customer_favorite'),
+    url = URL + '/favorite/query/'
+    data = {
+        "user_email": "user2@example.com"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+
+    if response.status_code == 200:
+        books = response.json()
+        for book in books:
+            print(f'Book Name: {book.get("book_name", "No name")}')
+            print(f'Author Name: {book.get("author_name", "No author")}')
+            print(f'Book Image: {book.get("book_image", "No image")}')
+            print()
+    else:
+        print(response.json())
+
+def test_get_num_follower_from_customerfollow():
+    # URL pattern for querying the number of followers a customer has in the CustomerFollow table
+    # path('num_follower/customerfollow/', views.get_num_follower_from_customerfollow, name='get_num_follower_from_customerfollow'),
+    url = URL + '/followers/author/count/'
+    data = {
+        "author_name": "Hoang Tran"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)  
+
+    print(f'Status Code: {response.status_code}')
+    print(f'Response JSON: {response.json()}')
+
+def test_change_num_follower():
+    # URL pattern for changing the number of followers an author has in the Author table
+    # path('followers/author/change/', views.change_num_follower, name='change_num_follower'),
+    url = URL + '/followers/author/change/'
+    data = {
+        "author_name": "Hoang Tran",
+        "change_num": 5
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+    print(f'Response JSON: {response.json()}')
+
+def test_insert_customer_order():
+    # URL pattern for inserting a new customer_order record
+    # path('order/insert/', views.insert_customer_order, name='insert_customer_order'),
+    url = URL + '/order/insert/'
+    data = {
+        "user_email": "user2@example.com"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
+
+    print(f'Status Code: {response.status_code}')
+    print(f'Response JSON: {response.json()}')
+
+def test_query_customer_order():
+    # URL pattern for querying all customer_order records for a user
+    # path('order/query/', views.query_customer_order, name='query_customer_order'),
+    url = URL + '/order/query/'
+    data = {
+        "user_email": "user2@example.com"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+    print(f'Response JSON: {response.json()}')
+
+def test_query_order_detail():
+    # URL pattern for querying all order_detail records for a specific order code
+    # path('order/detail/', views.query_order_detail, name='query_order_detail'),
+    url = URL + '/order/detail/'
+    data = {
+        "order_code": "P2az1F94aBrf"
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.get(url, headers=headers, params=data)
+
+    print(f'Status Code: {response.status_code}')
+    print(f'Response JSON: {response.json()}')
 
 if __name__ == "__main__":
     # test_register()
@@ -220,4 +385,14 @@ if __name__ == "__main__":
     # test_match_string_author()
     # test_get_author()
     # test_get_books_by_matching_string()
-    test_get_author_categories()
+    # test_insert_customer_cart_book()
+    # test_calculate_total_price()
+    # test_delete_customer_favorite()
+    # test_query_customer_favorite()
+    # test_get_num_follower_from_customerfollow()
+    # test_change_num_follower()
+    # test_insert_customer_favorite()
+    # test_insert_customer_order()
+    # test_query_customer_order()
+    # test_query_order_detail()
+    test_get_author()

@@ -108,7 +108,7 @@ def get_books_by_category(request):
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-# Query Book(BookName, AuthorName, BookImage) có book_input matching môt phần với book_name và kết hợp tương tự bên trên
+# Query Book(BookName, AuthorName, BookImage) having book_input matching a part of book_name and combine similar to above
 @csrf_exempt
 def get_books_by_matching_string(request):
     if request.method == "GET":

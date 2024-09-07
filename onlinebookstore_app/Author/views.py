@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.shortcuts import render
 from django.http import JsonResponse
 import json
 from django.core.files.temp import NamedTemporaryFile
@@ -11,10 +10,11 @@ from .utils import ensure_image_exist
 def author(request):
     if request.method == "GET":
         author_name = request.GET.get('author_name')
-        author = Author.objects.get(author_name=author_name)
-        if author is None:
+        try:
+            author = Author.objects.get(author_name=author_name)
+        except Author.DoesNotExist:
             return JsonResponse({"message": "Author not found"}, status=404)
-
+ 
         author_json = {
             "author_name": author.author_name,
             "num_follower": author.num_follower,
@@ -60,8 +60,9 @@ def all_authors(request):
 
 @csrf_exempt
 def request_images(request, author_name):
-    author = Author.objects.get(author_name=author_name)
-    if author is None:
+    try:
+        author = Author.objects.get(author_name=author_name)
+    except Author.DoesNotExist:
         return JsonResponse({"message": "Author not found"}, status=404)
 
     author_image = author.author_image
@@ -91,13 +92,13 @@ def get_5_popular_authors(request):
 def get_simple_author(request):
     if request.method == "GET":
         author_name = request.GET.get('author_name', '')
-        authors = Author.objects.get(author_name=author_name)
-
-        if authors is None:
+        try:
+            author = Author.objects.get(author_name=author_name)
+        except Author.DoesNotExist:
             return JsonResponse({"message": "Author not found"}, status=404)
         author_json = {
-            "author_name": authors.author_name,
-            "author_image": authors.author_image
+            "author_name": author.author_name,
+            "author_image": author.author_image
         }
         return JsonResponse(author_json, safe=False, status=200)
     
@@ -125,10 +126,11 @@ def get_match_string_authors(request):
 def get_author_info(request):
     if request.method == "GET":
         author_name = request.GET.get('author_name')
-        author = Author.objects.get(author_name=author_name)
-        if author is None:
+        try:
+            author = Author.objects.get(author_name=author_name)
+        except Author.DoesNotExist:
             return JsonResponse({"message": "Author not found"}, status=404)
-
+ 
         author_json = {
             "author_name": author.author_name,
             "num_follower": author.num_follower,
@@ -136,5 +138,3 @@ def get_author_info(request):
             "author_image": author.author_image
         }
         return JsonResponse(author_json, safe=False, status=200)
-    
-    return JsonResponse({"message": "Invalid request method"}, status=405)
