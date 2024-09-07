@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerFavorite
 from Book.models import Book
-from users.models import CustomUser as User
+from User.models import CustomUser as User
 import json
 
 @csrf_exempt

@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from .models import CustomerOrder, OrderDetail
 from CustomerCartBook.models import CustomerCartBook
 from Book.models import Book
-from users.models import CustomUser as User
+from User.models import CustomUser as User
 
 # insert new CustomerOrder(user_email) where PK index and order_code are genereated automatically, 
 # at that time insert OrderDetail for all books in CustomerCartBook and delete all records in CustomerCartBook

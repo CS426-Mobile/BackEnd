@@ -139,7 +139,7 @@ def test_10_books():
 def test_get_author():
     url = URL + '/author/'
     data = {
-        "author_name": "Hoang Tran"
+        "author_name": "Jeff Forcier"
     }
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers, params=data)
@@ -189,7 +189,7 @@ def test_get_books_by_matching_string():
         print('Failed to get books')
         
 def test_get_related_books():
-    book_name = "Developing Modern Database Applications with PostgreSQL"
+    book_name = "Python Web Development with Django"
     url = URL + f'/books/related/{book_name}/'
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
@@ -211,7 +211,7 @@ def test_insert_customer_cart_book():
     url = URL + '/cart/insert/'
     data = {
         "user_email": "user2@example.com",
-        "book_name": "Developing Modern Database Applications with PostgreSQL"
+        "book_name": "Python Web Development with Django"
     }
     headers = {'Content-Type': 'application/json'}
     response = requests.post(url, data=json.dumps(data), headers=headers)
@@ -254,7 +254,8 @@ def test_insert_customer_favorite():
     url = URL + '/favorite/insert/'
     data = {
         "user_email": "user2@example.com",
-        "book_name": "Developing Modern Database Applications with PostgreSQL"
+        "book_name": "Python Web Development with Django"
+        # "book_name": "Guangdong Wing Chun"
     }
     headers = {'Content-Type': 'application/json'}
     response = requests.post(url, data=json.dumps(data), headers=headers)
@@ -272,7 +273,7 @@ def test_delete_customer_favorite():
     url = URL + '/favorite/delete/'
     data = {
         "user_email": "user2@example.com",
-        "book_name": "Developing Modern Database Applications with PostgreSQL"
+        "book_name": "Python Web Development with Django"
     }
     headers = {'Content-Type': 'application/json'}
     response = requests.delete(url, data=json.dumps(data), headers=headers)
@@ -311,7 +312,7 @@ def test_get_num_follower_from_customerfollow():
     # path('num_follower/customerfollow/', views.get_num_follower_from_customerfollow, name='get_num_follower_from_customerfollow'),
     url = URL + '/followers/author/count/'
     data = {
-        "author_name": "Hoang Tran"
+        "author_name": "Jeff Forcier"
     }
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers, params=data)  
@@ -324,7 +325,7 @@ def test_change_num_follower():
     # path('followers/author/change/', views.change_num_follower, name='change_num_follower'),
     url = URL + '/followers/author/change/'
     data = {
-        "author_name": "Hoang Tran",
+        "author_name": "Jeff Forcier",
         "change_num": 5
     }
     headers = {'Content-Type': 'application/json'}
@@ -385,14 +386,14 @@ if __name__ == "__main__":
     # test_match_string_author()
     # test_get_author()
     # test_get_books_by_matching_string()
-    # test_insert_customer_cart_book()
+    test_insert_customer_cart_book()
     # test_calculate_total_price()
     # test_delete_customer_favorite()
     # test_query_customer_favorite()
     # test_get_num_follower_from_customerfollow()
     # test_change_num_follower()
     # test_insert_customer_favorite()
-    # test_insert_customer_order()
-    # test_query_customer_order()
-    # test_query_order_detail()
-    test_get_author()
+    test_insert_customer_order()
+    test_query_customer_order()
+    test_query_order_detail()
+    # test_get_author()

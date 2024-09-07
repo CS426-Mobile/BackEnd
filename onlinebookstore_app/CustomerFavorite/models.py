@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import CustomUser
+from User.models import CustomUser
 from Book.models import Book
 
 class CustomerFavorite(models.Model):
