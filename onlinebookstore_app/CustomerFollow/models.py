@@ -1,6 +1,6 @@
 from django.db import models
 from Author.models import Author
-from users.models import CustomUser
+from User.models import CustomUser
 
 class CustomerFollow(models.Model):
     user_email = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

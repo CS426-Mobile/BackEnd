@@ -1,6 +1,6 @@
 from django.db import models
 from Book.models import Book
-from users.models import CustomUser
+from User.models import CustomUser
 from .utils import generate_order_code, generate_str_digit
 
 class CustomerOrder(models.Model):

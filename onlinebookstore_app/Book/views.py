@@ -14,7 +14,8 @@ def get_10_books(request):
             {
                 "book_name": book.book_name,
                 "author_name": book.author_name.author_name,
-                "book_image": book.book_image
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
             } for book in books
         ]
         return JsonResponse(response, safe=False, status=200)
@@ -30,7 +31,8 @@ def get_20_books(request):
             {
                 "book_name": book.book_name,
                 "author_name": book.author_name.author_name,
-                "book_image": book.book_image
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
             } for book in books
         ]
         return JsonResponse(response, safe=False, status=200)
@@ -108,7 +110,7 @@ def get_books_by_category(request):
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-# Query Book(BookName, AuthorName, BookImage) có book_input matching môt phần với book_name và kết hợp tương tự bên trên
+# Query Book(BookName, AuthorName, BookImage) having book_input matching a part of book_name and combine similar to above
 @csrf_exempt
 def get_books_by_matching_string(request):
     if request.method == "GET":
@@ -210,6 +212,23 @@ def get_num_books(request, author_name):
     if request.method == "GET":
         num_books = Book.objects.filter(author_name=author_name).count()
         return JsonResponse({"num_books": num_books}, status=200)
+    
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
+# query all books that author_name has written
+@csrf_exempt
+def get_books_by_author(request, author_name):
+    if request.method == "GET":
+        books = Book.objects.filter(author_name=author_name)
+        response = [
+            {
+                "book_name": book.book_name,
+                "author_name": book.author_name.author_name,
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
+            } for book in books
+        ]
+        return JsonResponse(response, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
