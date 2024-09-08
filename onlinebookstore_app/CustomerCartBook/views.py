@@ -72,6 +72,79 @@ def delete_customer_cart_book(request):
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
+# increase the number of books in the cart of a CustomerCartBook(user_email, book_name) by 1
+@csrf_exempt
+def increase_num_books(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_email = data.get('user_email')
+            book_name = data.get('book_name')
+
+            # Fetch user and book instances (assuming these are foreign keys)
+            user = User.objects.get(user_email=user_email)
+            book = Book.objects.get(book_name=book_name)
+
+            # If the record exists, create a new record
+            if not CustomerCartBook.objects.filter(user_email=user, book_name=book).exists():
+                CustomerCartBook.objects.create(user_email=user, book_name=book, num_books=0)
+
+            # Increase the number of books by 1
+            cart_book = CustomerCartBook.objects.get(user_email=user, book_name=book)
+            cart_book.num_books += 1
+            cart_book.save()
+            return JsonResponse({"message": "Number of books increased successfully"}, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"message": "User not found"}, status=404)
+        except Book.DoesNotExist:
+            return JsonResponse({"message": "Book not found"}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({"message": "Invalid JSON format"}, status=408)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=500)
+
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
+# decrease the number of books in the cart of a CustomerCartBook(user_email, book_name) by 1
+@csrf_exempt
+def decrease_num_books(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_email = data.get('user_email')
+            book_name = data.get('book_name')
+
+            # Fetch user and book instances (assuming these are foreign keys)
+            user = User.objects.get(user_email=user_email)
+            book = Book.objects.get(book_name=book_name)
+
+            # Check if the record exists
+            if not CustomerCartBook.objects.filter(user_email=user, book_name=book).exists():
+                return JsonResponse({"message": "The record does not exist"}, status=400)
+
+            # Decrease the number of books by 1
+            cart_book = CustomerCartBook.objects.get(user_email=user, book_name=book)
+            cart_book.num_books -= 1
+
+            # If the number of books is 0, delete the record
+            if cart_book.num_books == 0:
+                cart_book.delete()
+            else:
+                cart_book.save()
+            return JsonResponse({"message": "Number of books decreased successfully"}, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"message": "User not found"}, status=404)
+        except Book.DoesNotExist:
+            return JsonResponse({"message": "Book not found"}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({"message": "Invalid JSON format"}, status=408)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=500)
+
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
 # calculate the total price of all books in the cart of a user_email
 @csrf_exempt
 def calculate_total_price(request):
@@ -84,3 +157,4 @@ def calculate_total_price(request):
         return JsonResponse({"total_price": total_price}, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
+
