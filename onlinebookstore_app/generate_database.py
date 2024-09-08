@@ -88,7 +88,7 @@ def collect_author_from_api(author_name):
     )
     print(f'Author {author_name} was created successfully')
 
-def search_books(query, max_results=10):
+def search_books(query, max_results=3):
     url = BOOKS_API_URL
     params = {
         'q': query,  # Câu truy vấn tìm kiếm (ví dụ: tên sách, tác giả)
@@ -272,6 +272,8 @@ def build_database():
         authors.append(author)
     build_database_with_authors(authors)
 
+    print("Database was built successfully")
+
 def generate_customerfollow():
     users = User.objects.all()
     authors = Author.objects.all()
@@ -322,9 +324,47 @@ def generate_customercartbook():
         except Exception as e:
             print(f'Error creating CustomerCartBook: {i}: {e}')
 
+def update_database():
+    # We get all authors from the database
+    authors = Author.objects.all()
+    for author in authors:
+        # We get all books from the database
+        books = Book.objects.filter(author_name=author)
+        print(f'Author {author.author_name}: {books.count()} books:')
+        # get language of books
+        languages = books.values('book_language').distinct()
+        # if language not include 'vi', we skip
+        if not any(language['book_language'] == 'vi' for language in languages):
+            continue
+        for book in books:
+            print(f'    Book: {book.book_name}')
+        # Get keyboard input, if 'y' then delete, otherwise skip
+        delete_author = input('Do you want to delete this author? (y/n): ')
+        if delete_author == 'y':
+            # remove all books of this author from the database
+            books.delete()
+            # remove author from the database
+            author.delete()
+            print(f'Author {author.author_name} was deleted successfully')
+        
+def delete_author():
+    author = input('Enter author name: ')
+    try:
+        author = Author.objects.get(author_name=author)
+    except Author.DoesNotExist:
+        print(f'Author {author} not found')
+        return
+    author_name = author.author_name
+    books = Book.objects.filter(author_name=author)
+    books.delete()
+    author.delete()
+    print(f'Author {author_name} was deleted successfully')
+
 if __name__ == '__main__':
     # collect_author_from_api('Gennady Korotkevich')
-    build_database()
-    # generate_customerfollow()
-    # generate_customerfavorite()
-    # generate_customercartbook()
+    # build_database()
+    generate_customerfollow()
+    generate_customerfavorite()
+    generate_customercartbook()
+    # update_database()
+    # delete_author()
