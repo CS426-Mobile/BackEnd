@@ -10,4 +10,7 @@ urlpatterns = [
 
     # URL pattern for querying all customer_favorite records for a user
     path('favorite/query/', views.query_customer_favorite, name='query_customer_favorite'),
+
+    # URL pattern for querying if a customer_favorite record exists
+    path('favorite/query_exist/', views.query_customer_favorite_exist, name='query_customer_favorite_exist'),
 ]

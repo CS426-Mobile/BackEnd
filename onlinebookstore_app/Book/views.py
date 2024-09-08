@@ -255,7 +255,8 @@ def get_related_books(request, book_name):
             {
                 "book_name": related_book.book_name,
                 "author_name": related_book.author_name.author_name,
-                "book_image": related_book.book_image
+                "book_image": related_book.book_image,
+                "average_rating": related_book.average_rating(),
             } for related_book in related_books
         ]
         return JsonResponse(response, safe=False, status=200)

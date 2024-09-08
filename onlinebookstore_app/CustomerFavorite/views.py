@@ -88,3 +88,25 @@ def query_customer_favorite(request):
             return JsonResponse({"message": str(e)}, status=500)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
+
+# query whether (user_email, book_name) record exists
+@csrf_exempt
+def query_customer_favorite_exist(request):
+    if request.method == "GET":
+        try:
+            user_email = request.GET.get('user_email')
+            book_name = request.GET.get('book_name')
+            user = User.objects.get(user_email=user_email)
+            book = Book.objects.get(book_name=book_name)
+            if CustomerFavorite.objects.filter(user_email=user, book_name=book).exists():
+                return JsonResponse({"message": "The record exists"}, status=200)
+            else:
+                return JsonResponse({"message": "The record does not exist"}, status=404)
+        except User.DoesNotExist:
+            return JsonResponse({"message": "User not found"}, status=404)
+        except Book.DoesNotExist:
+            return JsonResponse({"message": "Book not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=500)
+    
+    return JsonResponse({"message": "Invalid request method"}, status=405)
