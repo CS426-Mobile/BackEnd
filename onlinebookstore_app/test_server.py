@@ -405,5 +405,7 @@ if __name__ == "__main__":
     # test_get_author()
     # post_func(url="http://127.0.0.1:8000/cart/insert/", data={"user_email": "user2@example.com", "book_name": "Learning Swift"})
     # post_func(url="http://127.0.0.1:8000/cart/delete/", data={"user_email": "user2@example.com", "book_name": "Learning Swift"})
-    post_func(url="http://127.0.0.1:8000/cart/increase/", data={"user_email": "user2@example.com", "book_name": "Learning Swift"})
+    # post_func(url="http://127.0.0.1:8000/cart/increase/", data={"user_email": "user2@example.com", "book_name": "Learning Swift"})
     # post_func(url="http://127.0.0.1:8000/cart/decrease/", data={"user_email": "user2@example.com", "book_name": "Learning Swift"})
+    # post_func(url="http://127.0.0.1:8000/followers/toggle/", data={"user_email": "user2@example.com", "author_name": "Arie Wallert"})
+    post_func(url="http://127.0.0.1:8000/order/insert/", data={"user_email": "user2@example.com"})

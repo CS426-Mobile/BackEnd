@@ -33,13 +33,23 @@ class CustomerOrder(models.Model):
         if not self.order_code:
             self.order_code = self.generate_order_code()
         return super().save(*args, **kwargs)
+    
+    def total_price(self):
+        return sum([order_detail.price() for order_detail in self.orderdetail_set.all()])
+    
+    def num_books(self):
+        return sum([order_detail.num_books for order_detail in self.orderdetail_set.all()])
 
 class OrderDetail(models.Model):
     order_index = models.ForeignKey(CustomerOrder, on_delete=models.CASCADE)
     book_name = models.ForeignKey(Book, on_delete=models.CASCADE)
+    num_books = models.PositiveIntegerField(default=1)
 
     class Meta:
         unique_together = ('order_index', 'book_name')
 
     def __str__(self):
         return f"Order {self.order_index} includes {self.book_name}"
+    
+    def price(self):
+        return self.book_name.price * self.num_books
