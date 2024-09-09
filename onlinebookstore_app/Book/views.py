@@ -97,16 +97,7 @@ def get_books_by_category(request):
         if price_sort != 'none':
             filtered_books.sort(key=lambda x: x['Price'], reverse=(price_sort == 'desc'))
 
-        # Make return data
-        result = [
-            {
-                'book_name': book['book_name'],
-                'author_name': book['author_name'],
-                'book_image': book['book_image'],
-            } for book in filtered_books
-        ]
-        
-        return JsonResponse(result, safe=False, status=200)
+        return JsonResponse(filtered_books, safe=False, status=200)
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
@@ -163,17 +154,7 @@ def get_books_by_matching_string(request):
         if price_sort != 'none':
             filtered_books.sort(key=lambda x: x['Price'], reverse=(price_sort == 'desc'))
 
-        # Make return data
-        result = [
-            {
-                'book_name': book['book_name'],
-                'author_name': book['author_name'],
-                'book_image': book['book_image'],
-            } for book in filtered_books
-        ]
-        
-        return JsonResponse(result, safe=False, status=200)
-    
+        return JsonResponse(filtered_books, safe=False, status=200)    
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
 # query all information of book_name

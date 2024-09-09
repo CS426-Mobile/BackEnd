@@ -79,7 +79,9 @@ def query_customer_favorite(request):
                 response.append({
                     "book_name": book.book_name,
                     "author_name": book.author_name.author_name,
-                    "book_image": book.book_image
+                    "book_image": book.book_image,
+                    "average_rating": book.average_rating(),
+                    "price": book.price
                 })
             return JsonResponse(response, safe=False, status=200)
         except User.DoesNotExist:

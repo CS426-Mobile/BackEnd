@@ -16,4 +16,7 @@ urlpatterns = [
 
     # URL pattern for calculating the total price of the books in the cart for a user
     path('cart/total_price/', views.calculate_total_price, name='calculate_total_price'),
+
+    # URL pattern for querying all customer_cart_book records for a user
+    path('cart/query/', views.query_customer_cart_book, name='query_customer_cart_book'),
 ]

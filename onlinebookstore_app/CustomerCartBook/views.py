@@ -158,3 +158,23 @@ def calculate_total_price(request):
     
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
+# query all customer_cart_book records for a user(user_email)
+@csrf_exempt
+def query_customer_cart_book(request):
+    if request.method == "GET":
+        user_email = request.GET.get('user_email')
+        cart_books = CustomerCartBook.objects.filter(user_email__user_email=user_email)
+        response = []
+        for cart_book in cart_books:
+            book = Book.objects.get(book_name=cart_book.book_name)
+            response.append({
+                "book_name": book.book_name,
+                "author_name": book.author_name.author_name,
+                "book_image": book.book_image,
+                "average_rating": book.average_rating(),
+                "price": book.price,
+                "num_books": cart_book.num_books
+            })
+        return JsonResponse(response, safe=False, status=200)
+    
+    return JsonResponse({"message": "Invalid request method"}, status=405)
