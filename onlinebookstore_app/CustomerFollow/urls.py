@@ -7,4 +7,5 @@ urlpatterns = [
     path('followers/author/change/', views.change_num_follower, name='change_num_follower'),
     path('followers/author/query/', views.query_customer_follow, name='query_customer_follow'),
     path('followers/toggle/', views.toggle_follow, name='toggle_follow'),
+    path('followers/query/', views.query_follow, name='query_follow'),
 ]

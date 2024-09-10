@@ -88,3 +88,22 @@ def toggle_follow(request):
             return JsonResponse({"message": "User not found"}, status=404)
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
+
+# Query follow status of an author (author_name) for a user (user_email)
+@csrf_exempt
+def query_follow(request):
+    if request.method == "GET":
+        author_name = request.GET.get('author_name')
+        user_email = request.GET.get('user_email')
+        try:
+            follow = CustomerFollow.objects.filter(author_name__author_name=author_name, user_email__user_email=user_email)
+            if follow.exists():
+                return JsonResponse({"follow": True}, status=200)
+            else:
+                return JsonResponse({"follow": False}, status=200)
+        except Author.DoesNotExist:
+            return JsonResponse({"message": "Author not found"}, status=404)
+        except User.DoesNotExist:
+            return JsonResponse({"message": "User not found"}, status=404)
+
+    return JsonResponse({"message": "Invalid request method"}, status=405)
