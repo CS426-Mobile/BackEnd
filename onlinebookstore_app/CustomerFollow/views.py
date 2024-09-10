@@ -89,7 +89,7 @@ def toggle_follow(request):
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-# Query follow status of an author (author_name) for a user (user_email)
+# Query follow status of (author_name, user_email)
 @csrf_exempt
 def query_follow(request):
     if request.method == "GET":
