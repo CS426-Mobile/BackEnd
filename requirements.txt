@@ -1,0 +1,4 @@
+# requirements.txt
+Django
+python-dotenv
+requests
