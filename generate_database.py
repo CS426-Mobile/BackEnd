@@ -22,6 +22,12 @@ from CustomerCartBook.models import CustomerCartBook
 
 User = get_user_model()
 
+def clean_database():
+    Book.objects.all().delete()
+    Category.objects.all().delete()
+    Author.objects.all().delete()
+    User.objects.all().delete()
+
 def generate_users():
     for i in range(0, 31):
         try:
@@ -34,11 +40,6 @@ def generate_users():
             print(f'User {user.user_email} was created successfully')
         except Exception as e:
             print(f'Error creating user: {i}: {e}')
-
-def clean_database():
-    User.objects.all().delete()
-    Book.objects.all().delete()
-    Author.objects.all().delete()
 
 def find_wikipedia_page(title):
     # Tìm kiếm trang trên Wikipedia
@@ -256,24 +257,6 @@ def build_database_with_authors(authors, depth = 2):
                 author_lists.append([author, depth - 1])
                 count_author[depth] += 1
 
-def build_database():
-    if User.objects.all().count() == 0:
-        generate_users()
-    
-    entirebooks = collect_books_from_api()
-    authors = []
-    count_books[-1] = len(entirebooks)
-    for i in range(len(entirebooks)):
-        book = entirebooks[i]
-        insert_book_to_database(book)
-        if i >= 3:
-            continue
-        author = book.get('authors', ['Unknown Author'])[0]
-        authors.append(author)
-    build_database_with_authors(authors)
-
-    print("Database was built successfully")
-
 def generate_customerfollow():
     users = User.objects.all()
     authors = Author.objects.all()
@@ -406,13 +389,6 @@ def edit_all_price_star_weight_page():
         book.save()
         print(f'Book {book.book_name} was updated successfully with average rating: {book.average_rating()}')
 
-def get_avarage_all():
-    books = Book.objects.all()
-    rating_list = [book.average_rating() for book in books]
-    # sort rating_list
-    rating_list.sort()
-    print(f'Average rating of all books: {rating_list}')
-
 def edit_num_follower():
     authors = Author.objects.all()
     for author in authors:
@@ -424,15 +400,33 @@ def edit_num_follower():
         author.save()
         print(f'Author {author.author_name} was updated successfully with num_follower: {author.num_follower}')
 
-if __name__ == '__main__':
-    # collect_author_from_api('Gennady Korotkevich')
-    # build_database()
-    # generate_customerfollow()
-    # generate_customerfavorite()
-    # generate_customercartbook()
-    # update_database()
-    # delete_author()
-    # collect_book_from_api_and_insert_book()
-    # edit_all_price_star_weight_page()
-    # get_avarage_all()
+def build_database_with_many_categories():
+    if User.objects.all().count() == 0:
+        generate_users()
+    
+    entirebooks = collect_books_from_api()
+    authors = []
+    count_books[-1] = len(entirebooks)
+    for i in range(len(entirebooks)):
+        book = entirebooks[i]
+        insert_book_to_database(book)
+        if i >= 3:
+            continue
+        author = book.get('authors', ['Unknown Author'])[0]
+        authors.append(author)
+    build_database_with_authors(authors)
+
+    print("Database was built successfully")
+
+def build_database():
+    if User.objects.all().count() == 0:
+        generate_users()
+    collect_book_from_api_and_insert_book()
     edit_num_follower()
+    edit_all_price_star_weight_page()
+    generate_customerfollow()
+    generate_customerfavorite()
+    generate_customercartbook()
+
+if __name__ == '__main__':
+    build_database()
