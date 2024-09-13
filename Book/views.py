@@ -67,6 +67,9 @@ def get_books_by_category(request):
         else:
             books = Book.objects.filter(category__category_name=category_name)
 
+        # Filter by price
+        books.filter(price__gte=price_min, price__lte=price_max)
+
         # Filter by rating
         rating_ranges = {
             '1': (1, 1.5),
@@ -76,6 +79,7 @@ def get_books_by_category(request):
             '5': (4.5, 5),
             'all': (1, 5),
         }
+
         # filter average rating whitin rating_ranges using book.average_rating(self)
         filtered_books = []
         for book in books:
@@ -91,11 +95,11 @@ def get_books_by_category(request):
 
         # Sort by average rating
         if rating_sort != 'none':
-            filtered_books.sort(key=lambda x: x['AverageRating'], reverse=(rating_sort == 'desc'))
+            filtered_books.sort(key=lambda x: x['average_rating'], reverse=(rating_sort == 'desc'))
 
         # Sort by price
         if price_sort != 'none':
-            filtered_books.sort(key=lambda x: x['Price'], reverse=(price_sort == 'desc'))
+            filtered_books.sort(key=lambda x: x['price'], reverse=(price_sort == 'desc'))
 
         return JsonResponse(filtered_books, safe=False, status=200)
     
@@ -120,9 +124,12 @@ def get_books_by_matching_string(request):
             books = Book.objects.all()
         else:
             books = Book.objects.filter(category__category_name=category_name)
+            
+        # Filter by price
+        books.filter(price__gte=price_min, price__lte=price_max)
 
         # Filter by matching string
-        books = books.filter(book_name__contains=book_input)
+        books.filter(book_name__contains=book_input)
 
         # Filter by rating
         rating_ranges = {
@@ -148,11 +155,11 @@ def get_books_by_matching_string(request):
 
         # Sort by average rating
         if rating_sort != 'none':
-            filtered_books.sort(key=lambda x: x['AverageRating'], reverse=(rating_sort == 'desc'))
+            filtered_books.sort(key=lambda x: x['average_rating'], reverse=(rating_sort == 'desc'))
 
         # Sort by price
         if price_sort != 'none':
-            filtered_books.sort(key=lambda x: x['Price'], reverse=(price_sort == 'desc'))
+            filtered_books.sort(key=lambda x: x['price'], reverse=(price_sort == 'desc'))
 
         return JsonResponse(filtered_books, safe=False, status=200)    
     return JsonResponse({"message": "Invalid request method"}, status=405)
