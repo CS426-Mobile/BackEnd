@@ -8,3 +8,7 @@ class Author(models.Model):
 
     def __str__(self):
         return self.author_name
+    
+    def average_rating(self):
+        total_rating = sum([book.average_rating() for book in self.book_set.all()])
+        return total_rating / self.book_set.count() if self.book_set.count() > 0 else 0

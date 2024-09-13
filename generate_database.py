@@ -7,7 +7,7 @@ from datetime import datetime
 
 BOOKS_API_URL = 'https://www.googleapis.com/books/v1/volumes'
 AUTHORS_API_URL = 'https://www.wikidata.org/w/api.php'
-API_KEY = 'AIzaSyDyIpI3GL9jH757RZHQXKeLQCrNn0OtvnM'
+API_KEY = 'AIzaSyBI7GKsq2l40OOPmRdDy4hxxx6LUIQuPkM'
 DEFAULT_NO_BOOK_IMAGE = 'https://www.peeters-leuven.be/covers/no_cover.gif'
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'onlinebookstore_app.settings')
@@ -93,7 +93,8 @@ def search_books(query, max_results=3):
     params = {
         'q': query,  # Câu truy vấn tìm kiếm (ví dụ: tên sách, tác giả)
         'key': API_KEY,
-        'maxResults': max_results
+        'maxResults': max_results,
+        'langRestrict': 'en'
     }
     
     # Gửi yêu cầu đến Google Books API
@@ -210,8 +211,7 @@ def build_database_with_author(author, depth = 2):
 
 def collect_books_from_api():
     # We collect books from Google Books API
-    titles = ['Python', 'Django', 'Java', 'JavaScript', 'React', 'Vue.js', 'Angular', 'Node.js', 'MongoDB', 'PostgreSQL', 'MySQL', 'SQLite', 'C++', 'C#', 'Ruby', 'PHP', 'Laravel', 'Swift', 'Kotlin', 'Android', 'iOS', 'Flutter', 'Dart', 'HTML', 'CSS',
-              'Business', 'Geography', 'History', 'Mathematics', 'Science', 'Physics', 'Chemistry', 'Biology', 'Astronomy', 'Economics', 'Psychology', 'Sociology', 'Philosophy', 'Literature', 'Art', 'Music', 'Film', 'Theater', 'Dance', 'Photography', 'Design', 'Architecture']
+    titles = ['Fiction', 'Non-Fiction', 'Science Fiction', 'History', 'Psychology', 'Business', 'Children\'s Literature', 'Biography', 'Health', 'Education']
     entirebooks = []
     for title in titles:
         books = search_books(title)
@@ -360,11 +360,79 @@ def delete_author():
     author.delete()
     print(f'Author {author_name} was deleted successfully')
 
+def collect_book_from_api_and_insert_book():
+    # We collect books from Google Books API
+    titles = ['Fiction', 'Non-Fiction', 'Science Fiction', 'History', 'Psychology', 'Business', 'Children\'s Literature', 'Biography', 'Health', 'Education']
+    entirebooks = []
+    for title in titles:
+        books = search_books(title, max_results=30)
+        if books is not None:
+            print(f'Found {len(books)} books for {title}')
+            for book in books:
+                book.update({'categories': [title]})
+                entirebooks.append(book)
+
+    for book in entirebooks:
+        insert_book_to_database(book)
+
+def edit_all_price_star_weight_page():
+    rating_possible = [1, 2, 3, 4, 5]
+    weight_random_max = [1000, 500, 800, 1100, 8000]
+    books = Book.objects.all()
+    for book in books:
+        # book.price = random.randint(20, 500) / 10.0
+        # book.book_page = book.book_page if book.book_page > 0 else random.randint(20, 500)
+        # book.book_weight = round(book.book_page * random.uniform(0.1175, 0.235), 2)
+
+        weight_random = [random.randint(1, weight_random_max[i]) for i in range(5)]
+        number_rating = random.randint(10, 5000)
+        book.num_1_star = 0
+        book.num_2_star = 0
+        book.num_3_star = 0
+        book.num_4_star = 0
+        book.num_5_star = 0
+        for _ in range(number_rating):
+            rating = random.choices(rating_possible, weights=weight_random, k=1)[0]
+            if rating == 1:
+                book.num_1_star += 1
+            elif rating == 2:
+                book.num_2_star += 1
+            elif rating == 3:
+                book.num_3_star += 1
+            elif rating == 4:
+                book.num_4_star += 1
+            else:
+                book.num_5_star += 1
+        book.save()
+        print(f'Book {book.book_name} was updated successfully with average rating: {book.average_rating()}')
+
+def get_avarage_all():
+    books = Book.objects.all()
+    rating_list = [book.average_rating() for book in books]
+    # sort rating_list
+    rating_list.sort()
+    print(f'Average rating of all books: {rating_list}')
+
+def edit_num_follower():
+    authors = Author.objects.all()
+    for author in authors:
+        # count from CustomerFollow
+        current_num_follower = CustomerFollow.objects.filter(author_name=author).count()
+        # count average rating
+        rating = author.average_rating()
+        author.num_follower = random.randint(current_num_follower, current_num_follower + int(200 * rating))
+        author.save()
+        print(f'Author {author.author_name} was updated successfully with num_follower: {author.num_follower}')
+
 if __name__ == '__main__':
     # collect_author_from_api('Gennady Korotkevich')
     # build_database()
-    generate_customerfollow()
-    generate_customerfavorite()
-    generate_customercartbook()
+    # generate_customerfollow()
+    # generate_customerfavorite()
+    # generate_customercartbook()
     # update_database()
     # delete_author()
+    # collect_book_from_api_and_insert_book()
+    # edit_all_price_star_weight_page()
+    # get_avarage_all()
+    edit_num_follower()
