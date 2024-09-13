@@ -5,11 +5,11 @@ from datetime import date
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-# Query 10 books(book_name, author_name, book_image) from the database
+# Query 10 random books(book_name, author_name, book_image) from the database
 @csrf_exempt
 def get_10_books(request):
     if request.method == "GET":
-        books = Book.objects.all()[:10]
+        books = Book.objects.all().order_by('?')[:10]
         response = [
             {
                 "book_name": book.book_name,
