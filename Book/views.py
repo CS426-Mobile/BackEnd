@@ -93,13 +93,13 @@ def get_books_by_category(request):
                     'price': book.price,
                 })
 
-        # Sort by average rating
-        if rating_sort != 'none':
-            filtered_books.sort(key=lambda x: x['average_rating'], reverse=(rating_sort == 'desc'))
-
         # Sort by price
         if price_sort != 'none':
             filtered_books.sort(key=lambda x: x['price'], reverse=(price_sort == 'desc'))
+
+        # Sort by average rating
+        if rating_sort != 'none':
+            filtered_books.sort(key=lambda x: x['average_rating'], reverse=(rating_sort == 'desc'))
 
         return JsonResponse(filtered_books, safe=False, status=200)
     
@@ -153,13 +153,14 @@ def get_books_by_matching_string(request):
                     'price': book.price,
                 })
 
+        # Sort by price
+        if price_sort != 'none':
+            filtered_books.sort(key=lambda x: x['price'], reverse=(price_sort == 'desc'))
+
         # Sort by average rating
         if rating_sort != 'none':
             filtered_books.sort(key=lambda x: x['average_rating'], reverse=(rating_sort == 'desc'))
 
-        # Sort by price
-        if price_sort != 'none':
-            filtered_books.sort(key=lambda x: x['price'], reverse=(price_sort == 'desc'))
 
         return JsonResponse(filtered_books, safe=False, status=200)    
     return JsonResponse({"message": "Invalid request method"}, status=405)
